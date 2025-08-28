@@ -1,0 +1,5 @@
+pandas
+requests
+pybit
+ta-lib
+ta
