@@ -1,1 +1,4 @@
 pip>=25.2
+pybit==5.11.0
+pandas
+requests
