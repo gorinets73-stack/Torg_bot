@@ -9,3 +9,4 @@ session = HTTP(
     testnet=True,           # используем тестовую биржу
     api_key=API_KEY,
     api_secre
+)
