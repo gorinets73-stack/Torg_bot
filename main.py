@@ -1,9 +1,4 @@
-import os
-import time
-import warnings
-from pybit.unified_trading import HTTP
-
-# Убираем предупреждения библиотеки
+ предупреждения библиотеки
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
@@ -82,4 +77,4 @@ if __name__ == "__main__":
     # Цикл для Render
     while True:
         main()
-        time.sleep(60)  # проверять раз в минуту
+        time.sleep(60)  # проверять раз
