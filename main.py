@@ -6,7 +6,7 @@ API_SECRET = "твой_api_secret"
 
 # Инициализация с правильными параметрами
 session = HTTP(
-    testnet=True,           # используем тестовую биржу
-    api_key=API_KEY,
-    api_secre
+    testnet=True,
+    api_key="ВАШ_API_KEY",
+    api_secret="ВАШ_API_SECRET"
 )
