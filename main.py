@@ -511,4 +511,4 @@ def webhook():
             send_message(chat_id, "Панель управления:", kb)
         elif text == "/mode":
             kb = {"inline_keyboard": [[
-                {"text": "Виртуальный", "call
+                {"text": "Виртуальный", "call"
