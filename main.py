@@ -437,78 +437,79 @@ load_state()
 @app.route("/", methods=["POST", "GET"])
 def webhook():
     global ACTIVE_TF, INVEST_AMOUNT, TRADE_MODE
-    if request.method == "GET":
-        return "OK", 200
+    if request.method == "POST":
+        data = request.json
 
-    data = request.json or {}
-    # Handle callback_query (inline keyboard clicks)
-    if "callback_query" in data:
-        try:
-            cq = data["callback_query"]
-            chat_id = cq["message"]["chat"]["id"]
-            data_cb = cq.get("data", "")
-            # toggle TFs
-            if data_cb.startswith("tf_on_"):
-                tf = data_cb.replace("tf_on_", "")
-                if tf not in ACTIVE_TF:
-                    ACTIVE_TF.append(tf)
-                    save_settings()
-                send_message(chat_id, f"✅ Включён TF {tf}")
-            elif data_cb.startswith("tf_off_"):
-                tf = data_cb.replace("tf_off_", "")
-                if tf in ACTIVE_TF:
-                    ACTIVE_TF.remove(tf)
-                    save_settings()
-                send_message(chat_id, f"❌ Отключён TF {tf}")
-            elif data_cb == "mode_virtual":
-                TRADE_MODE = "virtual"
-                save_settings()
-                send_message(chat_id, "Режим: Виртуальный")
-            elif data_cb == "mode_real":
-                TRADE_MODE = "real"
-                save_settings()
-                send_message(chat_id, "Режим: Реальный")
-            return jsonify({"ok": True})
-        except Exception as e:
-            logging.error(f"Ошибка обработки callback_query: {e}")
-            return jsonify({"ok": False}), 500
+        # MESSAGE
+        if "message" in data:
+            chat_id = data["message"]["chat"]["id"]
+            text = data["message"].get("text", "")
 
-    # MESSAGE
-    if "message" in data:
-        msg = data["message"]
-        chat_id = msg["chat"]["id"]
-        text = msg.get("text", "") or ""
+            if "@" in text:
+                # убираем упоминание бота, если есть
+                text = text.split()[0]
 
-        if "@" in text:
-            text = text.split()[0]
+            if text == "/start":
+                send_message(chat_id, "✅ Бот запущен!\n" + format_settings_text())
 
-        if text == "/start":
-            send_message(chat_id, "✅ Бот запущен!\n" + format_settings_text())
-        elif text == "/help":
-            send_message(chat_id, ("📌 Команды:\n"
-                                    "/start /help /settings /strategy /panel /mode /tfs /amount N /open /closed /balance"))
-        elif text == "/settings":
-            send_message(chat_id, format_settings_text())
-        elif text == "/strategy":
-            send_message(chat_id, ("📖 Стратегия:\n1) RSI(14) + SMA50/200\n2) LONG: RSI<30 + цена > SMA200\n3) SHORT: RSI>70 + цена < SMA200\n4) SL=2% TP=4% + уровни"))
-        elif text == "/panel":
-            kb = {"inline_keyboard": []}
-            row = []
-            for tf in ALL_TIMEFRAMES:
-                if tf in ACTIVE_TF:
-                    row.append({"text": f"❌ {tf}", "callback_data": f"tf_off_{tf}"})
-                else:
-                    row.append({"text": f"✅ {tf}", "callback_data": f"tf_on_{tf}"})
-                if len(row) == 2:
+            elif text == "/help":
+                send_message(chat_id,
+                             "📌 Команды:\n"
+                             "/start\n/help\n/settings\n/strategy\n/panel\n/mode\n"
+                             "/tfs\n/amount N\n/open\n/closed\n/balance")
+
+            elif text == "/settings":
+                send_message(chat_id, format_settings_text())
+
+            elif text == "/strategy":
+                send_message(chat_id,
+                             "📖 Стратегия:\n"
+                             "1) RSI(14) + SMA50/200\n"
+                             "2) LONG: RSI<30 + цена > SMA200\n"
+                             "3) SHORT: RSI>70 + цена < SMA200\n"
+                             "4) SL=2% TP=4% + уровни")
+
+            elif text == "/panel":
+                kb = {"inline_keyboard": []}
+                row = []
+                for tf in ALL_TIMEFRAMES:
+                    if tf in ACTIVE_TF:
+                        row.append({"text": f"❌ {tf}", "callback_data": f"tf_off_{tf}"})
+                    else:
+                        row.append({"text": f"✅ {tf}", "callback_data": f"tf_on_{tf}"})
+
+                    if len(row) == 2:
+                        kb["inline_keyboard"].append(row)
+                        row = []
+                if row:
                     kb["inline_keyboard"].append(row)
-                    row = []
-            if row:
-                kb["inline_keyboard"].append(row)
-            kb["inline_keyboard"].append([
-                {"text": "Set Virtual", "callback_data": "mode_virtual"},
-                {"text": "Set Real", "callback_data": "mode_real"}
-            ])
-            send_message(chat_id, "Панель управления:", kb)
-        elif text == "/mode":
-            kb = {"inline_keyboard": [[
-                {"text": "Виртуальный", "call"}
+
+                kb["inline_keyboard"].append([
+                    {"text": "Set Virtual", "callback_data": "mode_virtual"},
+                    {"text": "Set Real", "callback_data": "mode_real"}
+                ])
+                send_message(chat_id, "Панель управления:", kb)
+
+            elif text == "/mode":
+                kb = {
+                    "inline_keyboard": [[
+                        {"text": "Виртуальный", "callback_data": "mode_virtual"},
+                        {"text": "Реальный", "callback_data": "mode_real"}
+                    ]]
+                }
+                send_message(chat_id, "Выбери режим торговли:", kb)
+
+            elif text == "/tfs":
+                kb = {"inline_keyboard": []}
+                for tf in ALL_TIMEFRAMES:
+                    if tf in ACTIVE_TF:
+                        kb["inline_keyboard"].append([
+                            {"text": f"❌ {tf}", "callback_data": f"tf_off_{tf}"}
+                        ])
+                    else:
+                        kb["inline_keyboard"].append([
+                            {"text": f"✅ {tf}", "callback_data": f"tf_on_{tf}"}
+                        ])
+                send_message(chat_id, "Выбор таймфреймов:", kb)
+
+        return "ok"
