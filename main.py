@@ -498,4 +498,4 @@ def webhook():
                 kb = {"inline_keyboard": []}
                 for tf in ALL_TIMEFRAMES:
                     if tf in ACTIVE_TF:
-                        kb["inline_keyboard"].append([{"text": f"❌ {tf}", "callback_data": f
+                        kb["inline_keyboard"].append([{"text": f"❌ {tf}", "callback_data"
