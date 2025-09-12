@@ -7,4 +7,3 @@ services:
     startCommand: python main.py
     environment:
       pythonVersion: 3.11.9
-    runtime: python-3.11
