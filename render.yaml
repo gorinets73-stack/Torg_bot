@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: my-telegram-bot
+    name: my-app
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python main.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
+    environment:
+      pythonVersion: 3.11.9
+    runtime: python-3.11
