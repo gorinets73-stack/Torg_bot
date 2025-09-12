@@ -1,1 +1,2 @@
-3.11.9
+environment:
+  pythonVersion: 3.11.9
