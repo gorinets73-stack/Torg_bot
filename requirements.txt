@@ -1,5 +1,5 @@
-pandas==2.2.2
-ccxt==4.3.59
-ta==0.11.0
-flask==3.0.3
-requests==2.32.3
+Flask==2.3.2
+pandas==1.5.3
+ccxt==4.1.13
+requests==2.31.0
+ta==0.10.2
