@@ -1,0 +1,11 @@
+# Создаём файл с нужной версией Python
+echo "3.10.14" > .python-version
+
+# Добавляем его в Git
+git add .python-version
+
+# Делаем коммит
+git commit -m "Указал версию Python 3.10.14 через .python-version"
+
+# Отправляем изменения на GitHub
+git push origin main
