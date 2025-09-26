@@ -1,6 +1,6 @@
+python-telegram-bot==20.6
 flask
 pandas
 ccxt
 requests
 ta
-python-telegram-bot==13.15
