@@ -3,3 +3,4 @@ pandas
 ccxt
 requests
 ta
+python-telegram-bot
