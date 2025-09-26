@@ -474,10 +474,9 @@ def amount_cmd(update: Update, context: CallbackContext):
     try:
         parts = context.args
         if parts:
-            new = float(parts[0])
-            if new > 0:
-                INVEST_AMOUNT = new
-                save_settings()
-                update.message.reply_text(f"Size set: {INVEST_AMOUNT}$")
-            else:
-                update.message.reply_text("Amount must be
+            new = float(parts[0])if new > 0:
+    INVEST_AMOUNT = new
+    save_settings()
+    update.message.reply_text(f"Size set: {INVEST_AMOUNT}$")
+else:
+    update.message.reply_text("Amount must be greater than 0$")
