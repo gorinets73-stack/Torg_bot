@@ -4,3 +4,4 @@ pandas
 ccxt
 requests
 ta
+imghdr
